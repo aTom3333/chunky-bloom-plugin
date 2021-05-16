@@ -1,0 +1,38 @@
+plugins {
+    id 'org.openjfx.javafxplugin' version '0.0.8'
+    id 'java'
+}
+
+javafx {
+    version = "11"
+    modules = [ 'javafx.controls', 'javafx.fxml']
+}
+
+apply plugin: 'java'
+
+group 'dev.ferrand'
+version '0.1.0'
+
+jar {
+    manifest {
+        attributes "Main-Class": "dev.ferrand.chunky.bloom.BloomPlugin"
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+compileJava {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile 'se.llbit:chunky-core:2.4.0-snapshot3'
+}
