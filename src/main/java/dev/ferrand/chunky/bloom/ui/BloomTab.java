@@ -13,6 +13,9 @@ import se.llbit.chunky.ui.DoubleAdjuster;
 import se.llbit.chunky.ui.IntegerAdjuster;
 import se.llbit.chunky.ui.RenderControlsFxController;
 import se.llbit.chunky.ui.render.RenderControlsTab;
+import se.llbit.json.JsonNumber;
+import se.llbit.json.JsonObject;
+import se.llbit.json.JsonValue;
 import se.llbit.util.ProgressListener;
 import se.llbit.util.TaskTracker;
 
@@ -44,6 +47,8 @@ public class BloomTab extends ScrollPane implements RenderControlsTab, Initializ
   }
 
   void refreshPostProcessing() {
+    if(scene == null)
+      return;
     scene.postProcessFrame(new TaskTracker(ProgressListener.NONE));
     controller.getCanvas().forceRepaint();
   }
@@ -55,9 +60,9 @@ public class BloomTab extends ScrollPane implements RenderControlsTab, Initializ
     bloom_blurRadius.setRange(1, 500);
     bloom_blurRadius.setAndUpdate(bloom.getBlurRadius());
     bloom_blurRadius.onValueChange(newRadius -> {
-      // TODO Save in scene
       bloom.setBlurRadius(newRadius);
       PersistentSettings.settings.setInt("bloom.blurRadius", newRadius);
+      saveInScene();
       refreshPostProcessing();
     });
 
@@ -66,9 +71,9 @@ public class BloomTab extends ScrollPane implements RenderControlsTab, Initializ
     bloom_threshold.setRange(0, 50, 0.01);
     bloom_threshold.setAndUpdate(bloom.getThreshold());
     bloom_threshold.onValueChange(newThresh -> {
-      // TODO Save in scene
       bloom.setThreshold(newThresh);
       PersistentSettings.settings.setDouble("bloom.threshold", newThresh);
+      saveInScene();
       refreshPostProcessing();
     });
 
@@ -77,23 +82,53 @@ public class BloomTab extends ScrollPane implements RenderControlsTab, Initializ
     bloom_downsamplingRatio.setRange(1, 64);
     bloom_downsamplingRatio.setAndUpdate(bloom.getDownSampleRatio());
     bloom_downsamplingRatio.onValueChange(newRatio -> {
-      // TODO Save in scene
       bloom.setDownSampleRatio(newRatio);
       PersistentSettings.settings.setInt("bloom.downsamplingRatio", newRatio);
+      saveInScene();
       refreshPostProcessing();
     });
 
     bloom_highlightOnly.setSelected(bloom.isHighlightOnly());
     bloom_highlightOnly.selectedProperty().addListener((observable, oldvalue, newvalue) -> {
       bloom.setHighlightOnly(newvalue);
-      // TODO Save in scene
       refreshPostProcessing();
     });
   }
 
   @Override
   public void update(Scene scene) {
-    // TODO Implement
+    JsonValue options = scene.getAdditionalData("bloomOptions");
+    if(options.isObject()) {
+      JsonObject optionsObj = options.object();
+      int blurRadius = optionsObj.get("blurRadius").asInt(bloom.getBlurRadius());
+      bloom.setBlurRadius(blurRadius);
+      bloom_blurRadius.set(blurRadius);
+      double threshold = optionsObj.get("threshold").asDouble(bloom.getThreshold());
+      bloom.setThreshold(threshold);
+      bloom_threshold.set(threshold);
+      int ratio = optionsObj.get("downsamplingRatio").asInt(bloom.getDownSampleRatio());
+      bloom.setDownSampleRatio(ratio);
+      bloom_downsamplingRatio.set(ratio);
+    }
+    refreshPostProcessing();
+  }
+
+  private void saveInScene() {
+    JsonObject options;
+    boolean needToAdd = true;
+    if(scene.getAdditionalData("bloomOptions").isObject()) {
+      options = scene.getAdditionalData("bloomOptions").asObject();
+      needToAdd = false;
+    } else {
+      options = new JsonObject();
+    }
+
+    options.set("blurRadius", new JsonNumber(bloom.getBlurRadius()));
+    options.set("threshold", new JsonNumber(bloom.getThreshold()));
+    options.set("downsamplingRatio", new JsonNumber(bloom.getDownSampleRatio()));
+
+    if(needToAdd)
+      scene.setAdditionalData("bloomOptions", options);
   }
 
   @Override

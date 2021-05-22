@@ -11,7 +11,7 @@ javafx {
 apply plugin: 'java'
 
 group 'dev.ferrand'
-version '0.1.0'
+version '0.2.0'
 
 jar {
     manifest {
@@ -30,5 +30,5 @@ repositories {
 }
 
 dependencies {
-    compile 'se.llbit:chunky-core:2.4.0-snapshot3'
+    compile 'se.llbit:chunky-core:2.4.0-snapshot5'
 }
