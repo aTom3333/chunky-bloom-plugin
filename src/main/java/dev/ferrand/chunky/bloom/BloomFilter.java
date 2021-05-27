@@ -24,10 +24,10 @@ public class BloomFilter implements PostProcessingFilter {
     return downSampleRatio;
   }
 
-  public void setDownSampleRatio(int downSampleRatio) {
+  public synchronized void setDownSampleRatio(int downSampleRatio) {
     if(downSampleRatio < 1)
       downSampleRatio = 1;
-    setBlurRadius((int)Math.round(blurRadius * this.downSampleRatio / (double)downSampleRatio));
+    setBlurRadius((int) Math.round(blurRadius * this.downSampleRatio / (double) downSampleRatio));
     this.downSampleRatio = downSampleRatio;
   }
 
@@ -35,7 +35,7 @@ public class BloomFilter implements PostProcessingFilter {
     return blurRadius;
   }
 
-  public void setBlurRadius(int blurRadius) {
+  public synchronized void setBlurRadius(int blurRadius) {
     this.blurRadius = blurRadius;
     blurKernel = computeBlurKernel(blurRadius);
   }
@@ -44,7 +44,7 @@ public class BloomFilter implements PostProcessingFilter {
     return threshold;
   }
 
-  public void setThreshold(double threshold) {
+  public synchronized void setThreshold(double threshold) {
     this.threshold = threshold;
   }
 
@@ -52,12 +52,12 @@ public class BloomFilter implements PostProcessingFilter {
     return highlightOnly;
   }
 
-  public void setHighlightOnly(boolean highlightOnly) {
+  public synchronized void setHighlightOnly(boolean highlightOnly) {
     this.highlightOnly = highlightOnly;
   }
 
   @Override
-  public void processFrame(int width, int height, double[] input, BitmapImage output, double exposure, TaskTracker.Task task) {
+  public synchronized void processFrame(int width, int height, double[] input, BitmapImage output, double exposure, TaskTracker.Task task) {
     int reducedWidth = (width + downSampleRatio - 1) / downSampleRatio;
     int reducedHeight = (height + downSampleRatio - 1) / downSampleRatio;
 
