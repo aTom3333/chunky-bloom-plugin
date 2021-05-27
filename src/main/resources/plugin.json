@@ -2,7 +2,7 @@
   "name": "BloomPlugin",
   "author": "a_Tom",
   "main": "dev.ferrand.chunky.bloom.BloomPlugin",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "targetVersion": "2.4.0-151-g5451674f",
   "description": "Add a bloom post processing filter"
 }
