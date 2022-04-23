@@ -11,7 +11,7 @@ import se.llbit.chunky.PersistentSettings;
 import se.llbit.chunky.renderer.scene.Scene;
 import se.llbit.chunky.ui.DoubleAdjuster;
 import se.llbit.chunky.ui.IntegerAdjuster;
-import se.llbit.chunky.ui.RenderControlsFxController;
+import se.llbit.chunky.ui.controller.RenderControlsFxController;
 import se.llbit.chunky.ui.render.RenderControlsTab;
 import se.llbit.json.JsonNumber;
 import se.llbit.json.JsonObject;

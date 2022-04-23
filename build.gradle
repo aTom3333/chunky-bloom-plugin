@@ -11,7 +11,7 @@ javafx {
 apply plugin: 'java'
 
 group 'dev.ferrand'
-version '0.2.1'
+version '0.3.0'
 
 jar {
     manifest {
@@ -27,8 +27,11 @@ compileJava {
 repositories {
     mavenLocal()
     mavenCentral()
+    maven {
+        url 'https://repo.lemaik.de/'
+    }
 }
 
 dependencies {
-    compile 'se.llbit:chunky-core:2.4.0-snapshot5'
+    compile 'se.llbit:chunky-core:2.5.0-SNAPSHOT'
 }
